@@ -6,6 +6,8 @@ namespace IdentityServer.Domain.IdentityUser;
 // Personal data or the user
 public class IdentityUserPersonal
 {
+    public int Id { get; set; }
+    
     // Foreign key on user registration data
     public int UserId { get; set; }
     [JsonIgnore]
