@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IdentityServer.Persistence.EntityTypeConfigurations;
 
+// Fluent api configuration for IdentityUserRole
 public class IdentityUserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole>
 {
     public void Configure(EntityTypeBuilder<IdentityUserRole> builder)
