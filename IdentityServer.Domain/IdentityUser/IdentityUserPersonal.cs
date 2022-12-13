@@ -8,11 +8,9 @@ public class IdentityUserPersonal
 {
     public int Id { get; set; }
 
-    public string FirstName { get; set; } = Empty;
-    public string LastName { get; set; } = Empty;
-    public string PhoneNumber { get; set; } = Empty;
-
-    // Foreign key on user registration data
-    public int UserId { get; set; }
+    public string? FirstName { get; set; } = Empty;
+    public string? LastName { get; set; } = Empty;
+    public string? PhoneNumber { get; set; } = Empty;
+    
     [JsonIgnore] public IdentityUser? User { get; set; }
 }

@@ -26,8 +26,7 @@ public class IdentityUserConfiguration : IEntityTypeConfiguration<IdentityUser>
 
         // personal
         builder.HasOne(user => user.Personal)
-            .WithOne(personal => personal.User)
-            .HasForeignKey<IdentityUserPersonal>(personal => personal.UserId);
+            .WithOne(personal => personal.User);
 
         // role
         builder.HasOne(user => user.Role)
