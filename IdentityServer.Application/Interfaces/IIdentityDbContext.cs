@@ -10,5 +10,5 @@ public interface IIdentityDbContext
     DbSet<IdentityUserRole> Roles { get; set; }
     DbSet<IdentityUserPersonal> Personals { get; set; }
     
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
