@@ -1,5 +1,6 @@
 ﻿using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
+using IdentityServer.Persistence.EntityTypeConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Persistence;
@@ -16,6 +17,8 @@ public class IdentityDbContext : DbContext, IIdentityDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // apply configurations
+        modelBuilder.ApplyConfiguration(new IdentityUserConfiguration());
+        modelBuilder.ApplyConfiguration(new IdentityUserPersonalConfiguration());
+        modelBuilder.ApplyConfiguration(new IdentityUserRoleConfiguration());
     }
 }
