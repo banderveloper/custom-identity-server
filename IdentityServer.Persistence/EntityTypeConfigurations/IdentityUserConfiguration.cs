@@ -18,8 +18,9 @@ public class IdentityUserConfiguration : IEntityTypeConfiguration<IdentityUser>
         builder.HasIndex(p => p.Username).IsUnique();
 
         // email
-        builder.Property(p => p.Email).IsRequired();
-        builder.HasIndex(p => p.Email).IsUnique();
+        builder.Property(p => p.Email).HasMaxLength(64);
+        // builder.Property(p => p.Email).IsRequired();
+        // builder.HasIndex(p => p.Email).IsUnique();
 
         // password
         builder.Property(p => p.PasswordHash).IsRequired();
