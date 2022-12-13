@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Requests\SA\Commands\CreateAdmin" />
       <Folder Include="Requests\SA\Queries" />
       <Folder Include="Requests\User" />
     </ItemGroup>
