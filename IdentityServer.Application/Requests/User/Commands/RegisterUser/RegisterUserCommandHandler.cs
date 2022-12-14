@@ -6,20 +6,20 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace IdentityServer.Application.Requests.SA.Commands.CreateAdmin;
+namespace IdentityServer.Application.Requests.User.Commands.RegisterUser;
 
-public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, int>
 {
     private readonly IIdentityDbContext _context;
     private readonly IConfiguration _configuration;
-
-    public CreateAdminCommandHandler(IIdentityDbContext context, IConfiguration configuration)
+    
+    public RegisterUserCommandHandler(IIdentityDbContext context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
     }
-
-    public async Task<Unit> Handle(CreateAdminCommand request, CancellationToken cancellationToken)
+    
+    public async Task<int> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         // Try to get user with given username or email
         var existingUser = await _context.Users
@@ -32,26 +32,26 @@ public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
             throw new UserAlreadyExistsException(request.Username, request?.Email);
 
         // If its ok
+        var userRole = await _context.Roles
+            .FirstOrDefaultAsync(role => role.Name == _configuration["DefaultRoles:User"], cancellationToken);
 
-        var adminRole = await _context.Roles
-            .FirstOrDefaultAsync(role => role.Name == _configuration["DefaultRoles:Admin"], cancellationToken);
-
-        _context.Users.Add(new IdentityUser
+        var newUser = new IdentityUser
         {
             Username = request.Username,
             Email = request.Email,
             PasswordHash = Sha256.Hash(request.Password),
-            RoleId = adminRole.Id,
+            RoleId = userRole.Id,
             Personal = new IdentityUserPersonal
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber
             }
-        });
-
+        };
+        
+        _context.Users.Add(newUser);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return newUser.Id;
     }
 }
