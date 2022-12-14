@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register the IOptions object
 builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<DefaultRoleConfiguration>(builder.Configuration.GetSection("DefaultRoles"));
 
@@ -19,20 +20,21 @@ builder.Services.AddSingleton(resolver =>
 builder.Services.AddSingleton(resolver => 
     resolver.GetRequiredService<IOptions<DefaultRoleConfiguration>>().Value);
 
+
 // Inject other layer DI
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services.AddControllers();
 
-// Injecting automapper configuration for automapping through IMappable<>
+// Injecting automapper configuration for automapping through IMappable
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
     config.AddProfile(new AssemblyMappingProfile(typeof(IIdentityDbContext).Assembly));
 });
 
-// Initialize db
+// Initialize database
 try
 {
     var scope = builder.Services.BuildServiceProvider().CreateScope();
@@ -47,8 +49,8 @@ catch (Exception ex)
 
 var app = builder.Build();
 
-app.UseSaAuthentication();
 app.UseHttpsRedirection();
+app.UseSaAuthentication();
 
 app.MapControllerRoute(
     name: "default",
