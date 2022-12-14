@@ -8,24 +8,23 @@ public class AssemblyMappingProfile : Profile
     public AssemblyMappingProfile(Assembly assembly)
         => ApplyMappingsFromAssembly(assembly);
 
-    // Method invoked at MAIN, when server starts, applies mapping profiles (calls Mapping method) for each type that inherits from IMapWith
+    // Method invoked at MAIN, applies mapping profiles (calls Mapping method) for each type that inherits from IMappable
     private void ApplyMappingsFromAssembly(Assembly assembly)
     {
-        // Get all classes than implements IMapWith interface
-        var iMapWithImplementers = assembly.GetExportedTypes()
+        // Get all classes than implements IMappable interface
+        var mappableTypes = assembly.GetExportedTypes()
             .Where(type => type.GetInterfaces()
-                .Any(i => i.IsGenericType &&
-                          i.GetGenericTypeDefinition() == typeof(IMapWith<>)))
+                .Any(i => i == typeof(IMappable)))
             .ToList();
 
-        // run above each class that implements IMapWith interface
-        foreach (var iMapWithImplementer in iMapWithImplementers)
+        // run above each class that implements IMappable interface
+        foreach (var mappableType in mappableTypes)
         {
-            // locally creates instance of class than inherits from IMapWith
-            var instance = Activator.CreateInstance(iMapWithImplementer);
+            // locally creates instance of class than inherits from IMappable
+            var instance = Activator.CreateInstance(mappableType);
 
-            // gets CUSTOM Mapping method realisation, or DEFAULT realisation described in IMapWith
-            var method = iMapWithImplementer.GetMethod("Mapping");
+            // get MAPPING method, got from IMappable
+            var method = mappableType.GetMethod("Mapping");
 
             // invokes method Mapping at given instance at pass AssemblyMappingProfile there
             method?.Invoke(instance, new object?[] { this });

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
+using IdentityServer.Api.Models.SA;
 using IdentityServer.Application.Requests.SA.Commands.CreateRole;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,22 +12,20 @@ namespace IdentityServer.Api.Controllers;
 public class SaController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public SaController(IMediator mediator)
+    public SaController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
-    [HttpGet]
-    public IActionResult Get()
+    [HttpPost("createRole")]
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
     {
-        return Ok("You are SA!");
-    }
+        var command = _mapper.Map<CreateRoleCommand>(model);
+        await _mediator.Send(command);
 
-    // [HttpPost("createRole")]
-    // public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
-    // {
-    //     await _mediator.Send(new CreateRoleCommand() { Name = model.Name });
-    //     return Ok();
-    // }
+        return NoContent();
+    }
 }
