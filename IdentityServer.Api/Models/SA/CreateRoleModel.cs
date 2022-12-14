@@ -10,8 +10,6 @@ public class CreateRoleModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateRoleModel, CreateRoleCommand>()
-            .ForMember(cmd => cmd.Name, options =>
-                options.MapFrom(model => model.Name));
+        profile.CreateMap<CreateRoleModel, CreateRoleCommand>();
     }
 }
