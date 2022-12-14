@@ -25,7 +25,7 @@ try
 {
     var scope = builder.Services.BuildServiceProvider().CreateScope();
     var context = scope.ServiceProvider.GetService<IdentityDbContext>();
-    DbInitializer.Initialize(context);
+    DbInitializer.Initialize(context, builder.Configuration);
 }
 catch (Exception ex)
 {
