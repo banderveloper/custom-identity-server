@@ -16,6 +16,12 @@ public class SAController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok("You are SA!");
+    }
+
     // [HttpPost("createRole")]
     // public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
     // {

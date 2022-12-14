@@ -1,6 +1,6 @@
 using IdentityServer.Application;
-using IdentityServer.Application.Interfaces;
 using IdentityServer.Persistence;
+using IdentityServer.Api.Middleware.SAAuthentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +25,7 @@ catch (Exception ex)
 
 var app = builder.Build();
 
+app.UseSaAuthentication();
 app.UseHttpsRedirection();
 app.MapControllers();
 
