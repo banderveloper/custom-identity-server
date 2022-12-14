@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
@@ -28,7 +29,8 @@ public class GetUserJwtQueryHandler : IRequestHandler<GetUserJwtQuery, string>
             .Include(user => user.Role)
             .FirstOrDefaultAsync(user => user.Id == request.UserId);
 
-        // todo if user not found
+        if(user is null)
+            throw new UserNotFoundException();
 
         var token = GenerateToken(user);
         return token;
