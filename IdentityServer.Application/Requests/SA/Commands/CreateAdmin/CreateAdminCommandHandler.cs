@@ -1,4 +1,5 @@
-﻿using IdentityServer.Application.Common.Exceptions;
+﻿using IdentityServer.Application.Common.Configurations;
+using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Hashing;
 using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
@@ -11,12 +12,12 @@ namespace IdentityServer.Application.Requests.SA.Commands.CreateAdmin;
 public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
 {
     private readonly IIdentityDbContext _context;
-    private readonly IConfiguration _configuration;
+    private readonly DefaultRoleConfiguration _roleConfiguration;
 
-    public CreateAdminCommandHandler(IIdentityDbContext context, IConfiguration configuration)
+    public CreateAdminCommandHandler(IIdentityDbContext context, DefaultRoleConfiguration roleConfiguration)
     {
         _context = context;
-        _configuration = configuration;
+        _roleConfiguration = roleConfiguration;
     }
 
     public async Task<Unit> Handle(CreateAdminCommand request, CancellationToken cancellationToken)
@@ -34,7 +35,7 @@ public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
         // If its ok
 
         var adminRole = await _context.Roles
-            .FirstOrDefaultAsync(role => role.Name == _configuration["DefaultRoles:Admin"], cancellationToken);
+            .FirstOrDefaultAsync(role => role.Name == _roleConfiguration.AdminRole, cancellationToken);
 
         _context.Users.Add(new IdentityUser
         {

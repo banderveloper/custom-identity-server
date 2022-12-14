@@ -1,4 +1,5 @@
-﻿using IdentityServer.Application.Common.Exceptions;
+﻿using IdentityServer.Application.Common.Configurations;
+using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Hashing;
 using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
@@ -11,12 +12,13 @@ namespace IdentityServer.Application.Requests.User.Commands.RegisterUser;
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, int>
 {
     private readonly IIdentityDbContext _context;
-    private readonly IConfiguration _configuration;
+    private readonly DefaultRoleConfiguration _roleConfiguration;
     
-    public RegisterUserCommandHandler(IIdentityDbContext context, IConfiguration configuration)
+    public RegisterUserCommandHandler(IIdentityDbContext context, DefaultRoleConfiguration roleConfiguration)
     {
         _context = context;
-        _configuration = configuration;
+        _roleConfiguration = roleConfiguration;
+        Console.WriteLine("DEFAULT ROLE: " + _roleConfiguration.UserRole);
     }
     
     public async Task<int> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, i
 
         // If its ok
         var userRole = await _context.Roles
-            .FirstOrDefaultAsync(role => role.Name == _configuration["DefaultRoles:User"], cancellationToken);
+            .FirstOrDefaultAsync(role => role.Name == _roleConfiguration.UserRole, cancellationToken);
 
         var newUser = new IdentityUser
         {

@@ -2,10 +2,22 @@ using System.Reflection;
 using IdentityServer.Application;
 using IdentityServer.Persistence;
 using IdentityServer.Api.Middleware.SAAuthentication;
+using IdentityServer.Application.Common.Configurations;
 using IdentityServer.Application.Common.Mappings;
 using IdentityServer.Application.Interfaces;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<DefaultRoleConfiguration>(builder.Configuration.GetSection("DefaultRoles"));
+
+// Explicitly register the settings object by delegating to the IOptions object
+builder.Services.AddSingleton(resolver => 
+    resolver.GetRequiredService<IOptions<JwtConfiguration>>().Value);
+
+builder.Services.AddSingleton(resolver => 
+    resolver.GetRequiredService<IOptions<DefaultRoleConfiguration>>().Value);
 
 // Inject other layer DI
 builder.Services.AddApplication();
