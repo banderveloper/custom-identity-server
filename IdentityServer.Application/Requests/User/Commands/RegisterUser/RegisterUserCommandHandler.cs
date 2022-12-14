@@ -5,7 +5,6 @@ using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.Application.Requests.User.Commands.RegisterUser;
 
@@ -18,7 +17,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, i
     {
         _context = context;
         _roleConfiguration = roleConfiguration;
-        Console.WriteLine("DEFAULT ROLE: " + _roleConfiguration.UserRole);
     }
     
     public async Task<int> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
