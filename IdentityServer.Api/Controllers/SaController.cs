@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IdentityServer.Api.Models.SA;
+using IdentityServer.Application.Requests.SA.Commands.CreateAdmin;
 using IdentityServer.Application.Requests.SA.Commands.CreateRole;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,4 +28,15 @@ public class SaController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpPost("createAdmin")]
+    public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminModel model)
+    {
+        var command = _mapper.Map<CreateAdminCommand>(model);
+        await _mediator.Send(command);
+
+        return NoContent();
+    }
+    
+    
 }
