@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AutoMapper;
+﻿using AutoMapper;
 using IdentityServer.Api.Models.SA;
 using IdentityServer.Application.Requests.SA.Commands.CreateRole;
 using MediatR;
