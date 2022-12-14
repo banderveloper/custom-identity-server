@@ -4,16 +4,19 @@ using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer.Application.Requests.SA.Commands.CreateAdmin;
 
 public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
 {
     private readonly IIdentityDbContext _context;
+    private readonly IConfiguration _configuration;
 
-    public CreateAdminCommandHandler(IIdentityDbContext context)
+    public CreateAdminCommandHandler(IIdentityDbContext context, IConfiguration configuration)
     {
         _context = context;
+        _configuration = configuration;
     }
 
     public async Task<Unit> Handle(CreateAdminCommand request, CancellationToken cancellationToken)
@@ -31,7 +34,7 @@ public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand>
         // If its ok
 
         var adminRole = await _context.Roles
-            .FirstOrDefaultAsync(role => role.Name == "admin", cancellationToken);
+            .FirstOrDefaultAsync(role => role.Name == _configuration["DefaultRoles:Admin"], cancellationToken);
 
         _context.Users.Add(new IdentityUser
         {
