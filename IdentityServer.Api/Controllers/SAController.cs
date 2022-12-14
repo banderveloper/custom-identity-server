@@ -7,11 +7,11 @@ namespace IdentityServer.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SAController : ControllerBase
+public class SaController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public SAController(IMediator mediator)
+    public SaController(IMediator mediator)
     {
         _mediator = mediator;
     }
