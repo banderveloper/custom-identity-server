@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using IdentityServer.Application.Common.Mappings;
 using IdentityServer.Application.Requests.Commands.CreateUser;
 
@@ -8,7 +9,9 @@ using static String;
 public class RegisterModel : IMappable
 {
     // Required
+    [Required]
     public string Username { get; set; } = Empty;
+    [Required]
     public string Password { get; set; } = Empty;
 
     // Personal (not required)

@@ -23,6 +23,9 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegisterModel model)
     {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        
         // map model to CQRS command for mediator
         var createCommand = _mapper.Map<CreateUserCommand>(model);
 
@@ -39,6 +42,9 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
     {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        
         var query = _mapper.Map<GetUserPublicDataQuery>(model);
         var publicData = await _mediator.Send(query);
 
