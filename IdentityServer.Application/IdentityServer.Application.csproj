@@ -20,7 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Requests\SA\Queries" />
+      <Folder Include="Common\Exceptions" />
+      <Folder Include="Requests" />
     </ItemGroup>
 
 </Project>
