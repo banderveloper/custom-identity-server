@@ -5,7 +5,7 @@ using IdentityServer.Application.Requests.Commands.CreateUser;
 
 namespace IdentityServer.Api.Models;
 
-public class RegisterModel : IMappable
+public class CreateUserModel : IMappable
 {
     // Required
     [Required] public string Username { get; set; }
@@ -23,6 +23,6 @@ public class RegisterModel : IMappable
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<RegisterModel, CreateUserCommand>();
+        profile.CreateMap<CreateUserModel, CreateUserCommand>();
     }
 }

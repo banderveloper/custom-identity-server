@@ -37,7 +37,7 @@ public class UserController : ControllerBase
         return Ok(new { accessToken = token });
     }
 
-    [HttpGet("userinfo/{username}")]
+    [HttpGet("userInfo/{username}")]
     public async Task<IActionResult> GetUserInfo(string username)
     {
         // create query for getting user public data
@@ -50,5 +50,28 @@ public class UserController : ControllerBase
         var publicData = await _mediator.Send(query);
 
         return Ok(publicData);
+    }
+
+    [HttpPost("createUser")]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(model);
+
+        // create new user
+        var createCommand = _mapper.Map<CreateUserCommand>(model);
+        await _mediator.Send(createCommand);
+        
+        // create query for getting access token of created user
+        var query = new GetUserTokenQuery
+        {
+            Username = model.Username,
+            Password = model.Password
+        };
+
+        // send query and get access token
+        var token = await _mediator.Send(query);
+
+        return Ok(new { accessToken = token });
     }
 }
