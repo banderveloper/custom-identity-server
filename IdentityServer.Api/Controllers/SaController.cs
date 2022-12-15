@@ -16,6 +16,4 @@ public class SaController : ControllerBase
         _mediator = mediator;
         _mapper = mapper;
     }
-
-    
 }

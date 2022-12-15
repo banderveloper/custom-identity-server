@@ -21,6 +21,20 @@ public class IdentityUserPersonalConfiguration : IEntityTypeConfiguration<Identi
         // phone number
         builder.Property(personal => personal.PhoneNumber).HasMaxLength(16);
         
+        // email
+        builder.Property(p => p.Email).HasMaxLength(64);
+        
+        // country
+        builder.Property(p => p.Country).HasMaxLength(32);
+        
+        // age
+        
+        // work
+        builder.Property(p => p.Work).HasMaxLength(128);
+        
+        // work post
+        builder.Property(p => p.WorkPost).HasMaxLength(128);
+        
         // user
         builder.HasOne(personal => personal.User)
             .WithOne(user => user.Personal)
