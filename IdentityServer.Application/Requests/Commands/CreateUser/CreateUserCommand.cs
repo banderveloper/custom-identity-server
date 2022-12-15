@@ -4,7 +4,7 @@ using static System.String;
 namespace IdentityServer.Application.Requests.Commands.CreateUser;
 
 // CQRS command for CreateUserCommandHandler
-public class CreateUserCommand : IRequest<int>
+public class CreateUserCommand : IRequest<UserPublicDataDto>
 {
     // Required
     public string Username { get; set; } = Empty;

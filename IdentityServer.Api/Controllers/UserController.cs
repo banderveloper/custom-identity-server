@@ -29,14 +29,10 @@ public class UserController : ControllerBase
         // map model to CQRS command for mediator
         var createCommand = _mapper.Map<CreateUserCommand>(model);
 
-        // created user id
-        var userId = await _mediator.Send(createCommand);
+        // public data of created user
+        var publicData = await _mediator.Send(createCommand);
 
-        return Ok(new
-        {
-            IsSucceed = true,
-            UserId = userId
-        });
+        return Ok(publicData);
     }
 
     [HttpPost("login")]

@@ -1,4 +1,5 @@
-﻿using IdentityServer.Application.Common.Configurations;
+﻿using AutoMapper;
+using IdentityServer.Application.Common.Configurations;
 using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Hashing;
 using IdentityServer.Application.Interfaces;
@@ -9,18 +10,21 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityServer.Application.Requests.Commands.CreateUser;
 
 // Creates user at database and returns his id
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserPublicDataDto>
 {
     private readonly IIdentityDbContext _context;
+    private readonly IMapper _mapper;
     private readonly DefaultRoleConfiguration _roleConfiguration;
 
-    public CreateUserCommandHandler(IIdentityDbContext context, DefaultRoleConfiguration roleConfiguration)
+    public CreateUserCommandHandler(IIdentityDbContext context, IMapper mapper,
+        DefaultRoleConfiguration roleConfiguration)
     {
         _context = context;
+        _mapper = mapper;
         _roleConfiguration = roleConfiguration;
     }
 
-    public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<UserPublicDataDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         // Try to get user with given username in request
         var existingUser = await GetUserByUsernameAsync(request.Username, cancellationToken);
@@ -35,12 +39,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
         // If user role does not exists (hypothetically might not happen) - throw exception
         if (userRole is null)
             throw new NotFoundException(nameof(userRole), _roleConfiguration.UserRole);
-        
+
         // If everything is ok - start creating user
-        
+
         // Create user personal data from request 
         var personal = GetUserPersonalFromRequest(request);
-        
+
         // Create user with personal and user role
         var user = new IdentityUser
         {
@@ -49,13 +53,15 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
             Personal = personal,
             RoleId = userRole.Id
         };
-        
+
         // Save it to database
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
+
+        // get public data and return
+        var publicData = _mapper.Map<UserPublicDataDto>(user);
         
-        // Return id of created user
-        return user.Id;
+        return publicData;
     }
 
     private IdentityUserPersonal GetUserPersonalFromRequest(CreateUserCommand request)
