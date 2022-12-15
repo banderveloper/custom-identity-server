@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using IdentityServer.Api.Middleware.CustomExceptionHandler;
 using IdentityServer.Application;
 using IdentityServer.Persistence;
 using IdentityServer.Api.Middleware.SAAuthentication;
@@ -59,6 +60,7 @@ catch (Exception ex)
 
 var app = builder.Build();
 
+app.UseCustomExceptionHandler();
 app.UseHttpsRedirection();
 app.UseSaAuthentication();
 
