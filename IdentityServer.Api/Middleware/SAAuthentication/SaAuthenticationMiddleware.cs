@@ -20,7 +20,7 @@ public class SaAuthenticationMiddleware
         // If we try to get to SA scope, and input login and password is invalid
         if (IsPathToSa(path) && HeadersContainsInvalidSa(request.Headers))
         {
-            context.Response.StatusCode = 401;
+            context.Response.StatusCode = 403;
             await context.Response.WriteAsJsonAsync(new { errpr = "Invalid SA login or password" });
         }
         else
