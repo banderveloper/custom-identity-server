@@ -22,25 +22,45 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
 
     public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        // Try to get existing user with given username
-        var existingUser = await _context.Users
-            .FindAsync(new object[] { request.Username }, cancellationToken);
+        // Try to get user with given username in request
+        var existingUser = await GetUserByUsernameAsync(request.Username, cancellationToken);
 
-        // If database already has user with given username - throw exception
+        // If already exists user with given username - throw exception
         if (existingUser is not null)
             throw new AlreadyExistsException(nameof(existingUser), existingUser.Username);
 
-        // If not - register it
+        // Try to get user role, to give it for new user
+        var userRole = await GetUserRoleAsync(cancellationToken);
 
-        // Get USER role
-        var userRole = await _context.Roles
-            .FindAsync(new object[] { _roleConfiguration.UserRole }, cancellationToken);
-        // Error if role not found (hypothetically cannot happen, but let it be) 
+        // If user role does not exists (hypothetically might not happen) - throw exception
         if (userRole is null)
             throw new NotFoundException(nameof(userRole), _roleConfiguration.UserRole);
+        
+        // If everything is ok - start creating user
+        
+        // Create user personal data from request 
+        var personal = GetUserPersonalFromRequest(request);
+        
+        // Create user with personal and user role
+        var user = new IdentityUser
+        {
+            Username = request.Username,
+            PasswordHash = Sha256.Hash(request.Password),
+            Personal = personal,
+            RoleId = userRole.Id
+        };
+        
+        // Save it to database
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        // Return id of created user
+        return user.Id;
+    }
 
-        // Create user personals, it will be added to user
-        var userPersonal = new IdentityUserPersonal
+    private IdentityUserPersonal GetUserPersonalFromRequest(CreateUserCommand request)
+    {
+        return new IdentityUserPersonal
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -51,21 +71,19 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
             PhoneNumber = request.PhoneNumber,
             WorkPost = request.WorkPost
         };
+    }
 
-        // Create user entity with connected personal and user role
-        var user = new IdentityUser
-        {
-            Username = request.Username,
-            PasswordHash = Sha256.Hash(request.Password),
-            Personal = userPersonal,
-            RoleId = userRole.Id
-        };
+    private async Task<IdentityUser?> GetUserByUsernameAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(user => user.Username == username,
+                cancellationToken);
+    }
 
-        // Save to database
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        // Return user given id
-        return user.Id;
+    private async Task<IdentityUserRole?> GetUserRoleAsync(CancellationToken cancellationToken)
+    {
+        return await _context.Roles
+            .FirstOrDefaultAsync(role => role.Name == _roleConfiguration.UserRole,
+                cancellationToken);
     }
 }
