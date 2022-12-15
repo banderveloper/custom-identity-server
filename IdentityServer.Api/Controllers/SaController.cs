@@ -37,6 +37,4 @@ public class SaController : ControllerBase
 
         return NoContent();
     }
-    
-    
 }

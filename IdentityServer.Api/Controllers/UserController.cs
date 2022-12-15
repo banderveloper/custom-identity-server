@@ -9,7 +9,7 @@ namespace IdentityServer.Api.Controllers;
 
 // Default controller
 [ApiController]
-public class UserController
+public class UserController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
@@ -22,7 +22,7 @@ public class UserController
     
     // Register user and return his jwt
     [HttpPost("register")]
-    public async Task<ActionResult<string>> RegisterUser([FromBody] RegisterUserModel model)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserModel model)
     {
         // register user and return his id for getting jwt
         var registerUserCommand = _mapper.Map<RegisterUserCommand>(model);
@@ -33,6 +33,6 @@ public class UserController
         var userToken = await _mediator.Send(getUserJwtQuery);
         
         // return user jwt
-        return userToken;
+        return Ok(userToken);
     }
 }
