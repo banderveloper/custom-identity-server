@@ -3,7 +3,7 @@ using IdentityServer.Application.Common.Mappings;
 using IdentityServer.Domain.IdentityUser;
 using static System.String;
 
-namespace IdentityServer.Application.Requests;
+namespace IdentityServer.Application.Requests.Queries.GetUserPublicData;
 
 public class UserPublicDataDto : IMappable
 {

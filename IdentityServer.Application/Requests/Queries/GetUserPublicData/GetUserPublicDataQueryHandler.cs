@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Application.Requests.Queries.GetUserPublicData;
 
-public class GetUserDataQueryHandler : IRequestHandler<GetUserPublicDataQuery, UserPublicDataDto>
+public class GetUserPublicDataQueryHandler : IRequestHandler<GetUserPublicDataQuery, UserPublicDataDto>
 {
     private readonly IIdentityDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetUserDataQueryHandler(IIdentityDbContext context, IMapper mapper)
+    public GetUserPublicDataQueryHandler(IIdentityDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -28,10 +28,6 @@ public class GetUserDataQueryHandler : IRequestHandler<GetUserPublicDataQuery, U
         if (user is null)
             throw new NotFoundException(nameof(user), request.Username);
 
-        // If user found but password is incorrect
-        if (user.PasswordHash != Sha256.Hash(request.Password))
-            throw new IncorrectPasswordException(user.Username);
-        
         // If auth ok - map to public data and return
         var publicData = _mapper.Map<UserPublicDataDto>(user);
 

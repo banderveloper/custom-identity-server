@@ -2,6 +2,7 @@
 using IdentityServer.Api.Models;
 using IdentityServer.Application.Requests.Commands.CreateUser;
 using IdentityServer.Application.Requests.Queries.GetUserPublicData;
+using IdentityServer.Application.Requests.Queries.GetUserToken;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,28 +21,32 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterModel model)
+    [HttpGet("token/get/{username}/{password}")]
+    public async Task<IActionResult> GetToken(string username, string password)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-        
-        // map model to CQRS command for mediator
-        var createCommand = _mapper.Map<CreateUserCommand>(model);
+        // create query for getting access token
+        var query = new GetUserTokenQuery
+        {
+            Username = username,
+            Password = password
+        };
 
-        // public data of created user
-        var publicData = await _mediator.Send(createCommand);
+        // send query and get access token
+        var token = await _mediator.Send(query);
 
-        return Ok(publicData);
+        return Ok(new { accessToken = token });
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
+    [HttpGet("userinfo/{username}")]
+    public async Task<IActionResult> GetUserInfo(string username)
     {
-        if (!ModelState.IsValid)
-            return UnprocessableEntity(ModelState);
-        
-        var query = _mapper.Map<GetUserPublicDataQuery>(model);
+        // create query for getting user public data
+        var query = new GetUserPublicDataQuery
+        {
+            Username = username
+        };
+
+        // send query and get public data
         var publicData = await _mediator.Send(query);
 
         return Ok(publicData);

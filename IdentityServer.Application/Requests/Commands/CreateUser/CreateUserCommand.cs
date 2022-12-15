@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using IdentityServer.Application.Requests.Queries.GetUserPublicData;
+using MediatR;
 using static System.String;
 
 namespace IdentityServer.Application.Requests.Commands.CreateUser;
 
 // CQRS command for CreateUserCommandHandler
-public class CreateUserCommand : IRequest<UserPublicDataDto>
+public class CreateUserCommand : IRequest
 {
     // Required
     public string Username { get; set; } = Empty;

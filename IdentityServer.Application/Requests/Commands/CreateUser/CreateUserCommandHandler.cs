@@ -3,6 +3,7 @@ using IdentityServer.Application.Common.Configurations;
 using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Services;
 using IdentityServer.Application.Interfaces;
+using IdentityServer.Application.Requests.Queries.GetUserPublicData;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityServer.Application.Requests.Commands.CreateUser;
 
 // Creates user at database and returns his id
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserPublicDataDto>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
 {
     private readonly IIdentityDbContext _context;
     private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserP
         _roleConfiguration = roleConfiguration;
     }
 
-    public async Task<UserPublicDataDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         // Try to get user with given username in request
         var existingUser = await GetUserByUsernameAsync(request.Username, cancellationToken);
@@ -61,7 +62,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserP
         // get public data and return
         var publicData = _mapper.Map<UserPublicDataDto>(user);
         
-        return publicData;
+        return Unit.Value;
     }
 
     private IdentityUserPersonal GetUserPersonalFromRequest(CreateUserCommand request)
