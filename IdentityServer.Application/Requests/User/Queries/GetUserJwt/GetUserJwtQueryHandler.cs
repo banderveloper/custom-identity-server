@@ -24,6 +24,7 @@ public class GetUserJwtQueryHandler : IRequestHandler<GetUserJwtQuery, string>
 
     public async Task<string> Handle(GetUserJwtQuery request, CancellationToken cancellationToken)
     {
+        // todo
         var user = await _context.Users
             .Include(user => user.Personal)
             .Include(user => user.Role)
