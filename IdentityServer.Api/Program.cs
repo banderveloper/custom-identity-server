@@ -39,7 +39,8 @@ try
 {
     var scope = builder.Services.BuildServiceProvider().CreateScope();
     var context = scope.ServiceProvider.GetService<IdentityDbContext>();
-    DbInitializer.Initialize(context, builder.Configuration);
+    var roleConfiguration = scope.ServiceProvider.GetService<DefaultRoleConfiguration>();
+    DbInitializer.Initialize(context, roleConfiguration);
 }
 catch (Exception ex)
 {
