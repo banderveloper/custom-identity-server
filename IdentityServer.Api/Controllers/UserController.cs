@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityServer.Api.Models;
 using IdentityServer.Application.Requests.Commands.CreateUser;
+using IdentityServer.Application.Requests.Queries.GetUserPublicData;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,5 +34,14 @@ public class UserController : ControllerBase
             IsSucceed = true,
             UserId = userId
         });
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
+    {
+        var query = _mapper.Map<GetUserPublicDataQuery>(model);
+        var publicData = await _mediator.Send(query);
+
+        return Ok(publicData);
     }
 }
