@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using IdentityServer.Application.Common.Configurations;
 using IdentityServer.Application.Common.Exceptions;
-using IdentityServer.Application.Common.Hashing;
+using IdentityServer.Application.Common.Services;
 using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
