@@ -4,15 +4,12 @@ using IdentityServer.Application.Common.Mappings;
 using IdentityServer.Application.Requests.Commands.CreateUser;
 
 namespace IdentityServer.Api.Models;
-using static String;
 
 public class RegisterModel : IMappable
 {
     // Required
-    [Required]
-    public string Username { get; set; } = Empty;
-    [Required]
-    public string Password { get; set; } = Empty;
+    [Required] public string Username { get; set; }
+    [Required] public string Password { get; set; }
 
     // Personal (not required)
     public string? FirstName { get; set; } = null;
@@ -23,7 +20,7 @@ public class RegisterModel : IMappable
     public int? Age { get; set; } = null;
     public string? Work { get; set; } = null;
     public string? WorkPost { get; set; } = null;
-    
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<RegisterModel, CreateUserCommand>();
