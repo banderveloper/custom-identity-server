@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Application.Common.Configurations;
+using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Services;
 using IdentityServer.Application.Requests.Commands.CreateUser;
 using IdentityServer.Domain.IdentityUser;
@@ -31,12 +32,30 @@ public class CreateUserCommandHandlerTests : TestBase
 
         var createdUser = await Context.Users
             .FirstOrDefaultAsync(user => user.Username == username);
-        
+
         // Assert
         createdUser.ShouldBeOfType<IdentityUser>();
         createdUser.Username.ShouldBe(username);
         createdUser.PasswordHash.ShouldBe(Sha256.Hash(password));
         createdUser.Personal.Email.ShouldBe(email);
         createdUser.Role.Name.ShouldBe(RoleConfiguration.UserRole);
+    }
+
+    [Fact]
+    public async Task CreateUserCommandHandler_FailOnExistingUsername()
+    {
+        // Arrange
+        var handler = new CreateUserCommandHandler(Context, RoleConfiguration);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<AlreadyExistsException>(async () =>
+        {
+            await handler.Handle(new CreateUserCommand
+            {
+                Username = IdentityContextFactory.UsernameA,
+                Password = "notValuable",
+            }, CancellationToken.None);
+        });
     }
 }
