@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using IdentityServer.Application.Common.Configurations;
+﻿using IdentityServer.Application.Common.Configurations;
 using IdentityServer.Application.Common.Exceptions;
 using IdentityServer.Application.Common.Services;
 using IdentityServer.Application.Interfaces;
-using IdentityServer.Application.Requests.Queries.GetUserPublicData;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +12,11 @@ namespace IdentityServer.Application.Requests.Commands.CreateUser;
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
 {
     private readonly IIdentityDbContext _context;
-    private readonly IMapper _mapper;
     private readonly DefaultRoleConfiguration _roleConfiguration;
 
-    public CreateUserCommandHandler(IIdentityDbContext context, IMapper mapper,
-        DefaultRoleConfiguration roleConfiguration)
+    public CreateUserCommandHandler(IIdentityDbContext context, DefaultRoleConfiguration roleConfiguration)
     {
         _context = context;
-        _mapper = mapper;
         _roleConfiguration = roleConfiguration;
     }
 
