@@ -6,5 +6,5 @@ namespace IdentityServer.Application.Requests.Queries.SaGetUserData;
 
 public class SaGetUserDataQuery : IRequest<IdentityUser>
 {
-    public string Username { get; set; } = Empty;
+    public string Username { get; init; } = Empty;
 }

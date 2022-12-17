@@ -30,7 +30,7 @@ public class GetUserTokenQueryHandler : IRequestHandler<GetUserTokenQuery, strin
 
         // If user not found - throw exception
         if (user is null)
-            throw new NotFoundException(nameof(user), request.Username);
+            throw new NotFoundException(nameof(IdentityUser), request.Username);
 
         // If user found but password is incorrect
         if (user.PasswordHash != Sha256.Hash(request.Password))

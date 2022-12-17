@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IdentityServer.Application.Common.Exceptions;
-using IdentityServer.Application.Common.Services;
 using IdentityServer.Application.Interfaces;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
@@ -26,7 +25,7 @@ public class GetUserPublicDataQueryHandler : IRequestHandler<GetUserPublicDataQu
 
         // If user not found - throw exception
         if (user is null)
-            throw new NotFoundException(nameof(user), request.Username);
+            throw new NotFoundException(nameof(IdentityUser), request.Username);
 
         // If auth ok - map to public data and return
         var publicData = _mapper.Map<UserPublicDataDto>(user);

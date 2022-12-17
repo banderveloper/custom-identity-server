@@ -10,16 +10,15 @@ public class UserPublicDataDto : IMappable
     public string Username { get; set; } = Empty;
     public string Role { get; set; } = Empty;
 
-    public string? FirstName { get; set; } = null;
-    public string? LastName { get; set; } = null;
-    public string? PhoneNumber { get; set; } = null;
-    public string? Email { get; set; } = null;
-    public string? Country { get; set; } = null;
-    public int? Age { get; set; } = null;
-    public string? Work { get; set; } = null;
-    public string? WorkPost { get; set; } = null;
-
-
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Email { get; set; }
+    public string? Country { get; set; }
+    public int? Age { get; set; }
+    public string? Work { get; set; }
+    public string? WorkPost { get; set; }
+    
     public void Mapping(Profile profile)
     {
         profile.CreateMap<IdentityUser, UserPublicDataDto>()

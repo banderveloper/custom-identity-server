@@ -32,14 +32,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
 
         // If already exists user with given username - throw exception
         if (existingUser is not null)
-            throw new AlreadyExistsException(nameof(existingUser), existingUser.Username);
+            throw new AlreadyExistsException(nameof(IdentityUser), existingUser.Username);
 
         // Try to get user role, to give it for new user
         var userRole = await GetUserRoleAsync(cancellationToken);
 
         // If user role does not exists (hypothetically might not happen) - throw exception
         if (userRole is null)
-            throw new NotFoundException(nameof(userRole), _roleConfiguration.UserRole);
+            throw new NotFoundException(nameof(IdentityUserRole), _roleConfiguration.UserRole);
 
         // If everything is ok - start creating user
 
@@ -59,9 +59,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // get public data and return
-        var publicData = _mapper.Map<UserPublicDataDto>(user);
-        
         return Unit.Value;
     }
 
@@ -87,6 +84,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
                 cancellationToken);
     }
 
+    // Get role with name USER
     private async Task<IdentityUserRole?> GetUserRoleAsync(CancellationToken cancellationToken)
     {
         return await _context.Roles
