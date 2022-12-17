@@ -1,6 +1,6 @@
 ﻿namespace IdentityServer.Application.Common.Exceptions;
 
-public class IncorrectPasswordException : Exception
+public sealed class IncorrectPasswordException : Exception
 {
     public string Username { get; }
 

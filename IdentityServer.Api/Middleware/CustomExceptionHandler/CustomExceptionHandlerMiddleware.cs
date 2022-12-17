@@ -27,24 +27,43 @@ public class CustomExceptionHandlerMiddleware
 
     private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var code = HttpStatusCode.InternalServerError;
+        var statusCode = HttpStatusCode.InternalServerError;
         var result = string.Empty;
 
         switch (exception)
         {
-            case NotFoundException:
-                code = HttpStatusCode.NotFound;
+            case NotFoundException notFoundException:
+                statusCode = HttpStatusCode.NotFound;
+                result = JsonSerializer.Serialize(new
+                {
+                    description = notFoundException.Message, // text of exception
+                    entityName = notFoundException.EntityName, // entity class name, that is not found  
+                    notFoundValue = notFoundException.NotFoundValue // value of entity, that is not found
+                });
                 break;
-            case AlreadyExistsException:
-                code = HttpStatusCode.Conflict;
+            
+            case AlreadyExistsException alreadyExistsException:
+                statusCode = HttpStatusCode.Conflict;
+                result = JsonSerializer.Serialize(new
+                {
+                    description = alreadyExistsException.Message, // text of exception
+                    entityName = alreadyExistsException.EntityName, // entity class name, that is already exists
+                    existingValue = alreadyExistsException.ExistingValue // value of entity, that is already exists
+                });
                 break;
-            case IncorrectPasswordException:
-                code = HttpStatusCode.BadRequest;
+            
+            case IncorrectPasswordException incorrectPasswordException:
+                statusCode = HttpStatusCode.BadRequest;
+                result = JsonSerializer.Serialize(new
+                {
+                    description = incorrectPasswordException.Message, // text of exception
+                    username = incorrectPasswordException.Username  // username of password owner
+                });
                 break;
         }
 
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)code;
+        context.Response.StatusCode = (int)statusCode;
 
         if (result == string.Empty)
             result = JsonSerializer.Serialize(new { errpr = exception.Message });
