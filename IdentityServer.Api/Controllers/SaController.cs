@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using IdentityServer.Api.Models;
+using IdentityServer.Application.Requests.Commands.SaCreateRole;
 using IdentityServer.Application.Requests.Queries.SaGetUserData;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace IdentityServer.Api.Controllers;
 
@@ -33,5 +35,19 @@ public class SaController : ControllerBase
         var userInfo = _mapper.Map<GetUserFullInfoModel>(user);
 
         return Ok(userInfo);
+    }
+
+    [HttpPost("createRole")]
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
+        // map model to cqrs command
+        var command = _mapper.Map<SaCreateRoleCommand>(model);
+        // send command which creates role
+        await _mediator.Send(command);
+
+        return NoContent();
     }
 }
