@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityServer.Api.Models;
 using IdentityServer.Application.Requests.Commands.SaCreateRole;
+using IdentityServer.Application.Requests.Commands.SaDeleteRole;
 using IdentityServer.Application.Requests.Queries.SaGetUserData;
 using IdentityServer.Domain.IdentityUser;
 using MediatR;
@@ -30,7 +31,7 @@ public class SaController : ControllerBase
 
         // get identity user
         var user = await _mediator.Send(query);
-        
+
         // map to model without json ignore if role and personals
         var userInfo = _mapper.Map<GetUserFullInfoModel>(user);
 
@@ -46,6 +47,18 @@ public class SaController : ControllerBase
         // map model to cqrs command
         var command = _mapper.Map<SaCreateRoleCommand>(model);
         // send command which creates role
+        await _mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPost("deleteRole")]
+    public async Task<IActionResult> DeleteRole([FromBody] DeleteRoleModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
+        var command = _mapper.Map<SaDeleteRoleCommand>(model);
         await _mediator.Send(command);
 
         return NoContent();
