@@ -3,10 +3,8 @@ using IdentityServer.Api.Models;
 using IdentityServer.Application.Requests.Commands.SaCreateRole;
 using IdentityServer.Application.Requests.Commands.SaDeleteRole;
 using IdentityServer.Application.Requests.Queries.SaGetUserData;
-using IdentityServer.Domain.IdentityUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace IdentityServer.Api.Controllers;
 
