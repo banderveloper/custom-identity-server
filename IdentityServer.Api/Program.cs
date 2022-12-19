@@ -11,6 +11,19 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Injection CORS (Cross-Origin Resource Sharing), for access from any client
+builder.Services.AddCors(options =>
+{
+    // Allow any client, source and resource (for simplify)
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
+
 // Inject controllers, and configure JSON serialization to camelCase 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -63,6 +76,7 @@ var app = builder.Build();
 app.UseCustomExceptionHandler();
 app.UseHttpsRedirection();
 app.UseSaAuthentication();
+app.UseCors("AllowAll");
 
 app.MapControllerRoute(
     name: "default",
