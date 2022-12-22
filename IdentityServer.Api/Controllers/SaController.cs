@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IdentityServer.Api.Models;
+using IdentityServer.Application.Requests.Commands.SaChangeUserRole;
 using IdentityServer.Application.Requests.Commands.SaCreateRole;
 using IdentityServer.Application.Requests.Commands.SaDeleteRole;
 using IdentityServer.Application.Requests.Queries.SaGetUserData;
@@ -57,6 +58,18 @@ public class SaController : ControllerBase
             return UnprocessableEntity(ModelState);
 
         var command = _mapper.Map<SaDeleteRoleCommand>(model);
+        await _mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPost("changeUserRole")]
+    public async Task<IActionResult> ChangeUserRole([FromBody] ChangeUserRoleModel model)
+    {
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+
+        var command = _mapper.Map<SaChangeUserRoleCommand>(model);
         await _mediator.Send(command);
 
         return NoContent();
